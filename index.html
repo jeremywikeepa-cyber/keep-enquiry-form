@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keep Group — Build Enquiry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F7F7;
+      --card: #FFFFFF;
+      --border: #E8E8E8;
+      --radius-card: 12px;
+      --radius-btn: 6px;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-tertiary: #999999;
+      --btn-bg: #111111;
+      --btn-text: #FFFFFF;
+      --olive: #4A5240;
+      --font: 'DM Sans', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+    }
+
+    /* ── LAYOUT ── */
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px 60px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      margin-bottom: 32px;
+    }
+
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      width: 100%;
+      max-width: 560px;
+      padding: 40px 40px 36px;
+    }
+
+    @media (max-width: 600px) {
+      .form-card { padding: 28px 20px 24px; }
+      #app { padding: 24px 16px 48px; }
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 36px;
+    }
+    .progress-step {
+      flex: 1;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .progress-step.active { background: var(--olive); }
+
+    /* ── SLIDE ── */
+    .slide { display: none; animation: fadeIn 0.3s ease; }
+    .slide.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .slide-heading {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .slide-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* ── FORM FIELDS ── */
+    .field { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font);
+      font-size: 15px;
+      color: var(--text-primary);
+      background: var(--card);
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--olive);
+    }
+    textarea { resize: vertical; min-height: 100px; }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    /* ── OPTION CARDS ── */
+    .option-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 480px) { .option-cards { grid-template-columns: 1fr; } }
+
+    .option-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+    .option-card:hover { border-color: #CCCCCC; }
+    .option-card.selected {
+      border-color: var(--olive);
+      background: #F4F5F2;
+    }
+    .option-card .oc-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ── TOGGLE BUTTONS ── */
+    .toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-align: center;
+    }
+    .toggle-btn:hover { border-color: #CCCCCC; }
+    .toggle-btn.selected {
+      border-color: var(--olive);
+      background: #F4F5F2;
+      color: var(--olive);
+    }
+
+    /* ── CHIPS ── */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .chip {
+      padding: 8px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 99px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--card);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      user-select: none;
+    }
+    .chip:hover { border-color: #CCCCCC; color: var(--text-primary); }
+    .chip.selected {
+      border-color: var(--olive);
+      background: #F4F5F2;
+      color: var(--olive);
+    }
+
+    /* ── SLIDER ── */
+    .budget-display {
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--border);
+      outline: none;
+      margin-bottom: 20px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--olive);
+      cursor: pointer;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px var(--olive);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--olive);
+      cursor: pointer;
+      border: 2px solid #FFFFFF;
+    }
+
+    .forma-match {
+      background: #F4F5F2;
+      border: 1px solid #D8DCCE;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+    .forma-match .fm-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--olive);
+      margin-bottom: 4px;
+    }
+    .forma-match .fm-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      align-items: center;
+    }
+    .btn-primary {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--radius-btn);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-back {
+      padding: 14px 18px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .btn-back:hover { border-color: #CCCCCC; color: var(--text-primary); }
+
+    /* ── ERROR ── */
+    .field-error {
+      font-size: 12px;
+      color: #CC3333;
+      margin-top: 4px;
+      display: none;
+    }
+    .field-error.visible { display: block; }
+
+    /* ── THANK YOU SCREEN ── */
+    #thankyou {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      animation: fadeIn 0.4s ease;
+    }
+    .ty-logo { width: 40px; height: 40px; object-fit: contain; margin-bottom: 28px; }
+    .ty-heading {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+    .ty-sub {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .ty-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+    }
+    .estimate-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .est-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+    .est-range {
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
+    }
+    .est-product {
+      font-size: 14px;
+      color: var(--olive);
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+    .est-disclaimer {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    .cta-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      text-align: center;
+    }
+    .cta-heading {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .btn-cta {
+      display: inline-block;
+      padding: 14px 28px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--radius-btn);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-cta:hover { opacity: 0.85; }
+
+    /* ── EXIT INTENT OVERLAY ── */
+    #exit-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    #exit-overlay.visible { display: flex; }
+
+    .exit-card {
+      background: var(--card);
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      padding: 36px 32px;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    @media (max-width: 520px) { .exit-card { padding: 24px 18px; } }
+
+    .exit-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 22px;
+      line-height: 1;
+      padding: 4px;
+    }
+    .exit-close:hover { color: var(--text-primary); }
+
+    .exit-logo { width: 32px; height: 32px; object-fit: contain; margin-bottom: 20px; }
+    .exit-heading {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .exit-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .exit-step-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .exit-result {
+      background: #F4F5F2;
+      border: 1px solid #D8DCCE;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .exit-result .er-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--olive);
+      margin-bottom: 8px;
+    }
+    .exit-result .er-range {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .exit-result .er-product {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ── LOCATION ROW ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 420px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <img class="logo" src="https://static.showit.co/200/0CrL-cInTnquIoalvzzssQ/219535/keep-mini-spaces-icon-dark-olive-rgb-900px-w-72ppi.png" alt="Keep Group" />
+
+  <!-- ══ MAIN FORM ══ -->
+  <div class="form-card" id="form-card">
+    <!-- Progress -->
+    <div class="progress-wrap" id="progress-bar">
+      <div class="progress-step active" data-step="1"></div>
+      <div class="progress-step" data-step="2"></div>
+      <div class="progress-step" data-step="3"></div>
+      <div class="progress-step" data-step="4"></div>
+      <div class="progress-step" data-step="5"></div>
+      <div class="progress-step" data-step="6"></div>
+    </div>
+
+    <!-- Slide 1 — Contact -->
+    <div class="slide active" id="slide-1">
+      <div class="slide-heading">Let's start with you</div>
+      <div class="slide-sub">We'll use these details to send your project summary</div>
+      <div class="field">
+        <label>Full name *</label>
+        <input type="text" id="s1-name" placeholder="Your full name" />
+        <div class="field-error" id="err-name">Please enter your name</div>
+      </div>
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" id="s1-email" placeholder="you@email.com" />
+        <div class="field-error" id="err-email">Please enter a valid email</div>
+      </div>
+      <div class="field">
+        <label>Phone <span style="color:var(--text-tertiary);font-weight:400;">(optional)</span></label>
+        <input type="tel" id="s1-phone" placeholder="+61 4xx xxx xxx" />
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goNext(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 2 — Build Type -->
+    <div class="slide" id="slide-2">
+      <div class="slide-heading">What are you looking to build?</div>
+      <div class="slide-sub">Select the option that best fits your project</div>
+      <div class="option-cards" id="build-type-cards">
+        <div class="option-card" data-value="Granny Flat / Secondary Dwelling" onclick="selectCard(this,'build-type-cards')">
+          <div class="oc-label">Granny Flat / Secondary Dwelling</div>
+        </div>
+        <div class="option-card" data-value="Primary Home" onclick="selectCard(this,'build-type-cards')">
+          <div class="oc-label">Primary Home</div>
+        </div>
+        <div class="option-card" data-value="Duplex" onclick="selectCard(this,'build-type-cards')">
+          <div class="oc-label">Duplex</div>
+        </div>
+        <div class="option-card" data-value="Studio / Office / Pod" onclick="selectCard(this,'build-type-cards')">
+          <div class="oc-label">Studio / Office / Pod</div>
+        </div>
+        <div class="option-card" style="grid-column:1/-1;" data-value="Not sure yet" onclick="selectCard(this,'build-type-cards')">
+          <div class="oc-label">Not sure yet</div>
+        </div>
+      </div>
+      <div class="field-error" id="err-build-type" style="margin-bottom:4px;">Please select a build type</div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(2)">← Back</button>
+        <button class="btn-primary" onclick="goNext(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 3 — Location -->
+    <div class="slide" id="slide-3">
+      <div class="slide-heading">Tell us about your site</div>
+      <div class="slide-sub">Helps us factor in local conditions and approvals</div>
+      <div class="field">
+        <label>Suburb</label>
+        <input type="text" id="s3-suburb" placeholder="e.g. Penrith" />
+      </div>
+      <div class="field">
+        <label>State</label>
+        <select id="s3-state">
+          <option value="">Select state…</option>
+          <option value="NSW">NSW</option>
+          <option value="VIC">VIC</option>
+          <option value="QLD">QLD</option>
+          <option value="SA">SA</option>
+          <option value="WA">WA</option>
+          <option value="TAS">TAS</option>
+          <option value="ACT">ACT</option>
+          <option value="NT">NT</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Do you own the land?</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" data-value="true" onclick="selectToggle(this,'land-toggle')">Yes</button>
+          <button class="toggle-btn" data-value="false" onclick="selectToggle(this,'land-toggle')">No</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(3)">← Back</button>
+        <button class="btn-primary" onclick="goNext(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 4 — Situation -->
+    <div class="slide" id="slide-4">
+      <div class="slide-heading">Where are you in the process?</div>
+      <div class="slide-sub">No wrong answers — helps us tailor our response</div>
+      <div class="field">
+        <label>Timeline</label>
+        <div class="chips" id="timeline-chips">
+          <div class="chip" data-value="ASAP" onclick="selectChip(this,'timeline-chips')">ASAP</div>
+          <div class="chip" data-value="3 months" onclick="selectChip(this,'timeline-chips')">3 months</div>
+          <div class="chip" data-value="6 months" onclick="selectChip(this,'timeline-chips')">6 months</div>
+          <div class="chip" data-value="12 months+" onclick="selectChip(this,'timeline-chips')">12 months+</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>How are you planning to finance it?</label>
+        <div class="chips" id="finance-chips">
+          <div class="chip" data-value="Cash" onclick="selectChip(this,'finance-chips')">Cash</div>
+          <div class="chip" data-value="Construction loan" onclick="selectChip(this,'finance-chips')">Construction loan</div>
+          <div class="chip" data-value="Investment loan" onclick="selectChip(this,'finance-chips')">Investment loan</div>
+          <div class="chip" data-value="Not sure" onclick="selectChip(this,'finance-chips')">Not sure</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(4)">← Back</button>
+        <button class="btn-primary" onclick="goNext(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 5 — Budget -->
+    <div class="slide" id="slide-5">
+      <div class="slide-heading">What's your approximate budget?</div>
+      <div class="slide-sub">Drag to find your range — we'll match you to the right product</div>
+      <div class="budget-display" id="budget-display">$182,000</div>
+      <input type="range" id="budget-slider" min="50000" max="800000" step="5000" value="182000"
+             oninput="updateBudget(this.value)" />
+      <div class="forma-match" id="forma-match">
+        <div class="fm-label">FORMA MATCH</div>
+        <div class="fm-name" id="forma-match-name">Duo Forma — Secondary dwelling range</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(5)">← Back</button>
+        <button class="btn-primary" onclick="goNext(5)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 6 — Final -->
+    <div class="slide" id="slide-6">
+      <div class="slide-heading">Almost done</div>
+      <div class="slide-sub">Just a couple more things and we'll get right back to you</div>
+      <div class="field">
+        <label>How did you find us?</label>
+        <div class="chips" id="source-chips">
+          <div class="chip" data-value="Instagram" onclick="selectChip(this,'source-chips')">Instagram</div>
+          <div class="chip" data-value="Google" onclick="selectChip(this,'source-chips')">Google</div>
+          <div class="chip" data-value="Referral" onclick="selectChip(this,'source-chips')">Referral</div>
+          <div class="chip" data-value="Facebook" onclick="selectChip(this,'source-chips')">Facebook</div>
+          <div class="chip" data-value="LinkedIn" onclick="selectChip(this,'source-chips')">LinkedIn</div>
+          <div class="chip" data-value="Other" onclick="selectChip(this,'source-chips')">Other</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Anything else? <span style="color:var(--text-tertiary);font-weight:400;">(optional)</span></label>
+        <textarea id="s6-notes" placeholder="Anything else we should know about your project?"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goBack(6)">← Back</button>
+        <button class="btn-primary" id="submit-btn" onclick="submitForm()">Send my enquiry →</button>
+      </div>
+      <div class="field-error" id="err-submit" style="margin-top:12px;text-align:center;"></div>
+    </div>
+  </div>
+
+  <!-- ══ THANK YOU ══ -->
+  <div id="thankyou">
+    <div style="text-align:center;margin-bottom:36px;">
+      <img class="ty-logo" src="https://static.showit.co/200/0CrL-cInTnquIoalvzzssQ/219535/keep-mini-spaces-icon-dark-olive-rgb-900px-w-72ppi.png" alt="Keep" />
+      <div class="ty-heading" id="ty-heading">Thank you.</div>
+      <div class="ty-sub">We've received your enquiry and will be in touch within 24 hours.</div>
+    </div>
+    <div class="ty-divider"></div>
+    <div class="estimate-block">
+      <div class="est-label">Estimated Project Range</div>
+      <div class="est-range" id="est-range">—</div>
+      <div class="est-product" id="est-product">—</div>
+      <div class="est-disclaimer">Indicative estimate only. Subject to site conditions and final design.</div>
+    </div>
+    <div class="cta-block">
+      <div class="cta-heading">Ready to take the next step?</div>
+      <a class="btn-cta" href="https://cal.com/keepmodular/feasibility" target="_blank">Book a free 15-min call →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXIT INTENT OVERLAY ══ -->
+<div id="exit-overlay">
+  <div class="exit-card">
+    <button class="exit-close" onclick="closeExit()">✕</button>
+    <img class="exit-logo" src="https://static.showit.co/200/0CrL-cInTnquIoalvzzssQ/219535/keep-mini-spaces-icon-dark-olive-rgb-900px-w-72ppi.png" alt="Keep" />
+    <div class="exit-heading">Before you go</div>
+    <div class="exit-sub">Find out what your project could cost in 30 seconds.</div>
+
+    <!-- Exit Step 1 — Build type -->
+    <div id="exit-step-1">
+      <div class="exit-step-label">What are you building?</div>
+      <div class="option-cards" id="exit-build-cards">
+        <div class="option-card" data-value="Granny Flat / Secondary Dwelling" onclick="selectCard(this,'exit-build-cards')">
+          <div class="oc-label">Granny Flat / Secondary Dwelling</div>
+        </div>
+        <div class="option-card" data-value="Primary Home" onclick="selectCard(this,'exit-build-cards')">
+          <div class="oc-label">Primary Home</div>
+        </div>
+        <div class="option-card" data-value="Duplex" onclick="selectCard(this,'exit-build-cards')">
+          <div class="oc-label">Duplex</div>
+        </div>
+        <div class="option-card" data-value="Studio / Office / Pod" onclick="selectCard(this,'exit-build-cards')">
+          <div class="oc-label">Studio / Office / Pod</div>
+        </div>
+        <div class="option-card" style="grid-column:1/-1;" data-value="Not sure yet" onclick="selectCard(this,'exit-build-cards')">
+          <div class="oc-label">Not sure yet</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="btn-primary" onclick="exitNext(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Exit Step 2 — Budget -->
+    <div id="exit-step-2" style="display:none;">
+      <div class="exit-step-label">Rough budget?</div>
+      <div class="budget-display" id="exit-budget-display">$182,000</div>
+      <input type="range" id="exit-budget-slider" min="50000" max="800000" step="5000" value="182000"
+             oninput="updateExitBudget(this.value)" />
+      <div class="forma-match" id="exit-forma-match">
+        <div class="fm-label">FORMA MATCH</div>
+        <div class="fm-name" id="exit-forma-name">Duo Forma — Secondary dwelling range</div>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="btn-primary" onclick="exitNext(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Exit Step 3 — Email/Name -->
+    <div id="exit-step-3" style="display:none;">
+      <div class="exit-step-label">Where should we send your estimate?</div>
+      <div class="field">
+        <label>Email *</label>
+        <input type="email" id="exit-email" placeholder="you@email.com" />
+        <div class="field-error" id="exit-err-email">Please enter a valid email</div>
+      </div>
+      <div class="field">
+        <label>Name *</label>
+        <input type="text" id="exit-name" placeholder="Your name" />
+        <div class="field-error" id="exit-err-name">Please enter your name</div>
+      </div>
+      <div style="margin-top:4px;">
+        <button class="btn-primary" id="exit-submit-btn" onclick="submitExit()">Get my estimate →</button>
+      </div>
+    </div>
+
+    <!-- Exit Result -->
+    <div id="exit-result" style="display:none;">
+      <div class="exit-result">
+        <div class="er-label">Your Estimated Range</div>
+        <div class="er-range" id="exit-result-range">—</div>
+        <div class="er-product" id="exit-result-product">—</div>
+      </div>
+      <a class="btn-cta" href="https://keepmodular.com.au" target="_blank" style="display:block;text-align:center;">See our range →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── STATE ──
+  const CRM_URL = 'https://29ac15a6-44a5-4825-bf0b-1342b79564cb-00-1c914zwag5pfy.kirk.replit.dev';
+  const formData = {
+    name: '', email: '', phone: '',
+    product_interest: '', suburb: '', state: '',
+    owns_land: null, timeline: '', finance_method: '',
+    expected_budget: 182000, hear_about_us: '', additional_notes: ''
+  };
+  let currentSlide = 1;
+  let exitFired = false;
+  let formSubmitted = false;
+
+  // ── PROGRESS ──
+  function updateProgress(step) {
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+      el.classList.toggle('active', i < step);
+    });
+  }
+
+  // ── SLIDE NAV ──
+  function showSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('slide-' + n).classList.add('active');
+    currentSlide = n;
+    updateProgress(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goNext(from) {
+    if (!validateSlide(from)) return;
+    collectSlide(from);
+    showSlide(from + 1);
+  }
+
+  function goBack(from) {
+    showSlide(from - 1);
+  }
+
+  // ── VALIDATION ──
+  function validateSlide(n) {
+    let ok = true;
+    if (n === 1) {
+      const name = document.getElementById('s1-name').value.trim();
+      const email = document.getElementById('s1-email').value.trim();
+      const errN = document.getElementById('err-name');
+      const errE = document.getElementById('err-email');
+      errN.classList.toggle('visible', !name);
+      errE.classList.toggle('visible', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+      ok = name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    if (n === 2) {
+      const selected = document.querySelector('#build-type-cards .option-card.selected');
+      const err = document.getElementById('err-build-type');
+      err.classList.toggle('visible', !selected);
+      ok = !!selected;
+    }
+    return ok;
+  }
+
+  // ── COLLECT ──
+  function collectSlide(n) {
+    if (n === 1) {
+      formData.name = document.getElementById('s1-name').value.trim();
+      formData.email = document.getElementById('s1-email').value.trim();
+      formData.phone = document.getElementById('s1-phone').value.trim();
+    }
+    if (n === 2) {
+      const sel = document.querySelector('#build-type-cards .option-card.selected');
+      formData.product_interest = sel ? sel.dataset.value : '';
+    }
+    if (n === 3) {
+      formData.suburb = document.getElementById('s3-suburb').value.trim();
+      formData.state = document.getElementById('s3-state').value;
+      const landBtn = document.querySelector('[data-group="land-toggle"].selected');
+      if (landBtn) formData.owns_land = landBtn.dataset.value === 'true';
+    }
+    if (n === 4) {
+      const t = document.querySelector('#timeline-chips .chip.selected');
+      const f = document.querySelector('#finance-chips .chip.selected');
+      formData.timeline = t ? t.dataset.value : '';
+      formData.finance_method = f ? f.dataset.value : '';
+    }
+    if (n === 5) {
+      formData.expected_budget = parseInt(document.getElementById('budget-slider').value);
+    }
+    if (n === 6) {
+      const s = document.querySelector('#source-chips .chip.selected');
+      formData.hear_about_us = s ? s.dataset.value : '';
+      formData.additional_notes = document.getElementById('s6-notes').value.trim();
+    }
+  }
+
+  // ── INTERACTIVE COMPONENTS ──
+  function selectCard(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .option-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectToggle(el, group) {
+    el.dataset.group = group;
+    const parent = el.parentElement;
+    parent.querySelectorAll('.toggle-btn').forEach(b => {
+      b.classList.remove('selected');
+      b.dataset.group = group;
+    });
+    el.classList.add('selected');
+  }
+
+  function selectChip(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ── BUDGET SLIDER ──
+  function formatBudget(val) {
+    val = parseInt(val);
+    if (val >= 800000) return '$800,000+';
+    return '$' + val.toLocaleString('en-AU');
+  }
+
+  function formaMatch(val) {
+    val = parseInt(val);
+    if (val < 170000) return { label: 'Micro Forma', desc: 'Studio & pod range' };
+    if (val < 250000) return { label: 'Duo Forma', desc: 'Secondary dwelling range' };
+    if (val < 450000) return { label: 'Life Forma', desc: 'Primary home range' };
+    return { label: 'Premium / Bespoke', desc: 'Custom design range' };
+  }
+
+  function updateBudget(val) {
+    document.getElementById('budget-display').textContent = formatBudget(val);
+    const m = formaMatch(val);
+    document.getElementById('forma-match-name').textContent = m.label + ' — ' + m.desc;
+    formData.expected_budget = parseInt(val);
+  }
+
+  function updateExitBudget(val) {
+    document.getElementById('exit-budget-display').textContent = formatBudget(val);
+    const m = formaMatch(val);
+    document.getElementById('exit-forma-name').textContent = m.label + ' — ' + m.desc;
+  }
+
+  // ── L1 ESTIMATE LOGIC ──
+  function calcEstimate(buildType, state, budget) {
+    const basePrices = {
+      'Granny Flat / Secondary Dwelling': 182000,
+      'Primary Home': 449000,
+      'Duplex': 520000,
+      'Studio / Office / Pod': 65000,
+      'Not sure yet': 182000
+    };
+    const multipliers = {
+      'NSW': 1.0, 'VIC': 1.0, 'ACT': 1.0,
+      'QLD': 0.95, 'SA': 0.95,
+      'WA': 1.1, 'NT': 1.1,
+      'TAS': 0.98
+    };
+    const productLabels = {
+      'Granny Flat / Secondary Dwelling': 'Duo Forma — Secondary dwelling',
+      'Primary Home': 'Life Forma — Primary home',
+      'Duplex': 'Life Forma — Duplex',
+      'Studio / Office / Pod': 'Micro Forma — Studio & pod range',
+      'Not sure yet': 'Duo Forma — Secondary dwelling'
+    };
+
+    let base = basePrices[buildType] || 182000;
+    const mult = multipliers[state] || 1.0;
+    base = Math.round(base * mult);
+
+    let mid = base;
+    if (budget > base * 1.2) mid = budget;
+    else if (budget < base * 0.8) mid = base;
+
+    const low = Math.round(mid * 0.85 / 1000) * 1000;
+    const high = Math.round(mid * 1.15 / 1000) * 1000;
+
+    return {
+      range: '$' + low.toLocaleString('en-AU') + ' – $' + high.toLocaleString('en-AU'),
+      product: productLabels[buildType] || 'Duo Forma — Secondary dwelling'
+    };
+  }
+
+  // ── SUBMIT MAIN FORM ──
+  async function submitForm() {
+    collectSlide(6);
+    const btn = document.getElementById('submit-btn');
+    const err = document.getElementById('err-submit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      product_interest: formData.product_interest,
+      suburb: formData.suburb,
+      state: formData.state,
+      owns_land: formData.owns_land,
+      timeline: formData.timeline,
+      finance_method: formData.finance_method,
+      expected_budget: formData.expected_budget,
+      hear_about_us: formData.hear_about_us,
+      additional_notes: formData.additional_notes,
+      source: 'enquiry_form'
+    };
+
+    try {
+      const res = await fetch(CRM_URL + '/api/leads/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Server error ' + res.status);
+
+      formSubmitted = true;
+      showThankyou(payload);
+    } catch (e) {
+      err.textContent = 'Something went wrong. Please try again or email us directly.';
+      err.classList.add('visible');
+      btn.textContent = 'Send my enquiry →';
+      btn.disabled = false;
+    }
+  }
+
+  function showThankyou(payload) {
+    document.getElementById('form-card').style.display = 'none';
+    const ty = document.getElementById('thankyou');
+    ty.style.display = 'block';
+
+    const firstName = (payload.name || '').split(' ')[0];
+    document.getElementById('ty-heading').textContent = 'Thank you, ' + firstName + '.';
+
+    const est = calcEstimate(payload.product_interest, payload.state, payload.expected_budget);
+    document.getElementById('est-range').textContent = est.range;
+    document.getElementById('est-product').textContent = est.product;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── EXIT INTENT ──
+  let exitCurrentStep = 1;
+
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY < window.innerHeight * 0.1 && !exitFired && !formSubmitted) {
+      exitFired = true;
+      document.getElementById('exit-overlay').classList.add('visible');
+    }
+  });
+
+  function closeExit() {
+    document.getElementById('exit-overlay').classList.remove('visible');
+  }
+
+  function exitNext(step) {
+    if (step === 1) {
+      const sel = document.querySelector('#exit-build-cards .option-card.selected');
+      if (!sel) { alert('Please select a build type'); return; }
+      document.getElementById('exit-step-1').style.display = 'none';
+      document.getElementById('exit-step-2').style.display = 'block';
+      exitCurrentStep = 2;
+    } else if (step === 2) {
+      document.getElementById('exit-step-2').style.display = 'none';
+      document.getElementById('exit-step-3').style.display = 'block';
+      exitCurrentStep = 3;
+    }
+  }
+
+  async function submitExit() {
+    const email = document.getElementById('exit-email').value.trim();
+    const name = document.getElementById('exit-name').value.trim();
+    const errE = document.getElementById('exit-err-email');
+    const errN = document.getElementById('exit-err-name');
+    let ok = true;
+
+    errE.classList.toggle('visible', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    errN.classList.toggle('visible', !name);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !name) return;
+
+    const buildSel = document.querySelector('#exit-build-cards .option-card.selected');
+    const buildType = buildSel ? buildSel.dataset.value : 'Not sure yet';
+    const budget = parseInt(document.getElementById('exit-budget-slider').value);
+
+    const btn = document.getElementById('exit-submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    const payload = {
+      name,
+      email,
+      product_interest: buildType,
+      expected_budget: budget,
+      source: 'exit_intent',
+      additional_notes: 'Exit intent capture — partial lead'
+    };
+
+    try {
+      await fetch(CRM_URL + '/api/leads/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) { /* fail silently — still show result */ }
+
+    const est = calcEstimate(buildType, '', budget);
+    document.getElementById('exit-step-3').style.display = 'none';
+    document.getElementById('exit-result-range').textContent = est.range;
+    document.getElementById('exit-result-product').textContent = est.product;
+    document.getElementById('exit-result').style.display = 'block';
+  }
+
+  // Close overlay on background click
+  document.getElementById('exit-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeExit();
+  });
+</script>
+</body>
+</html>
